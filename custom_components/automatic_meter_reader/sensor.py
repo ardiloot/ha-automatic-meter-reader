@@ -19,6 +19,7 @@ _LOGGER = logging.getLogger(__name__)
 CONF_CAMERA_MODEL = "camera_model"
 CONF_METER_MODEL = "meter_model"
 CONF_IMAGE_URL = "image_url"
+CONF_CAPTURE_SERVICE = "capture_service"
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     _LOGGER.info(str(config))
@@ -31,7 +32,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Required(CONF_UNIT_OF_MEASUREMENT, default="m3"): cv.string,
         vol.Required(CONF_CAMERA_MODEL): cv.string,
         vol.Required(CONF_METER_MODEL): cv.string,
-        vol.Required(CONF_IMAGE_URL): cv.string
+        vol.Required(CONF_IMAGE_URL): cv.string,
+        vol.Required(CONF_CAPTURE_SERVICE): cv.string,
     }
 )
 
@@ -42,6 +44,7 @@ class UtilityMeter(Entity):
         self._name = config[CONF_NAME]
         self._unit_of_measurement = config[CONF_UNIT_OF_MEASUREMENT]
         self._image_url = config[CONF_IMAGE_URL]
+        self._cature_service = config[CONF_CAPTURE_SERVICE]
         self._amr = AutomaticMeterReader(config[CONF_CAMERA_MODEL], config[CONF_METER_MODEL])
 
     @property
@@ -69,9 +72,8 @@ class UtilityMeter(Entity):
 
         # Get new image
         _LOGGER.info("Take image...")
-        self.hass.services.call(
-            "esphome",
-            "%s_capture" % (self._name),
+        service_component, service_name = self._cature_service.split(".")
+        self.hass.services.call(service_component, service_name,
             {"flash_duration_ms": 3000, "flash_intensity": 25},
             blocking=True,
         )
