@@ -1,0 +1,8 @@
+{
+    "domain": "automatic_meter_reader",  
+    "name": "Automatic meter reader",
+    "documentation": "",
+    "dependencies": [],
+    "codeowners": [],
+    "requirements": []
+  }
