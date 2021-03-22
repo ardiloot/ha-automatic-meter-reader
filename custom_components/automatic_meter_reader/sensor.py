@@ -67,7 +67,7 @@ class UtilityMeter(Entity):
         _LOGGER.info("Utility meter update (%s)..." % (self._name))
         output_path = os.path.join(self.hass.config.path(), "automatic_meter_readings", self._name)
         _LOGGER.info("Output path: %s" % (output_path))
-        if (not os.path.isdir(output_path)):
+        if not os.path.isdir(output_path):
             os.makedirs(output_path, exist_ok=True)
 
         # Get new image
@@ -109,7 +109,10 @@ class UtilityMeter(Entity):
 
         # Write debug image
         timer_start = time()
-        output_debug_file = os.path.join(self.hass.config.path(), "www", "%s.jpg" % (self._name))
+        debug_path = os.path.join(self.hass.config.path(), "www")
+        if not os.path.isdir(debug_path):
+            os.makedirs(debug_path, exist_ok=True)
+        output_debug_file = os.path.join(debug_path, "%s.jpg" % (self._name))
         cv2.imwrite(output_debug_file, self._amr.img_debug, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
         _LOGGER.info("Save debug img done in %.3fs" % (time() - timer_start))
 
