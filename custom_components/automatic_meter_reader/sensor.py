@@ -10,9 +10,9 @@ from datetime import timedelta, datetime
 from automatic_meter_reader import AutomaticMeterReader
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.entity import Entity
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_NAME, CONF_UNIT_OF_MEASUREMENT
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import PLATFORM_SCHEMA, STATE_CLASS_TOTAL
+from homeassistant.const import CONF_NAME, CONF_UNIT_OF_MEASUREMENT, CONF_DEVICE_CLASS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,7 +29,8 @@ SCAN_INTERVAL = timedelta(minutes=10)
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Required(CONF_NAME): cv.string,
-        vol.Required(CONF_UNIT_OF_MEASUREMENT, default="m3"): cv.string,
+        vol.Required(CONF_UNIT_OF_MEASUREMENT, default="m³"): cv.string,
+        vol.Required(CONF_DEVICE_CLASS, default="water"): cv.string,
         vol.Required(CONF_CAMERA_MODEL): cv.string,
         vol.Required(CONF_METER_MODEL): cv.string,
         vol.Required(CONF_IMAGE_URL): cv.string,
@@ -37,12 +38,13 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     }
 )
 
-class UtilityMeter(Entity):
+class UtilityMeter(SensorEntity):
 
     def __init__(self, config):
         self._state = None
         self._name = config[CONF_NAME]
         self._unit_of_measurement = config[CONF_UNIT_OF_MEASUREMENT]
+        self._device_class = config[CONF_DEVICE_CLASS]
         self._image_url = config[CONF_IMAGE_URL]
         self._cature_service = config[CONF_CAPTURE_SERVICE]
         self._amr = AutomaticMeterReader(config[CONF_CAMERA_MODEL], config[CONF_METER_MODEL])
@@ -65,7 +67,11 @@ class UtilityMeter(Entity):
 
     @property
     def state_class(self):
-        return "total"
+        return STATE_CLASS_TOTAL
+
+    @property
+    def device_class(self):
+        return self._device_class
 
     def update(self):
         _LOGGER.info("Utility meter update (%s)..." % (self._name))
