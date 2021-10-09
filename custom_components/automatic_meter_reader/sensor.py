@@ -63,6 +63,10 @@ class UtilityMeter(Entity):
     def force_update(self):
         return True
 
+    @property
+    def state_class(self):
+        return "total"
+
     def update(self):
         _LOGGER.info("Utility meter update (%s)..." % (self._name))
         output_path = os.path.join(self.hass.config.path(), "automatic_meter_readings", self._name)
