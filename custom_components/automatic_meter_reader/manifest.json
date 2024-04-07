@@ -1,11 +1,11 @@
 {
   "domain": "automatic_meter_reader",  
   "name": "Automatic meter reader",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "integration_type": "device",
   "documentation": "https://github.com/ardiloot/ha-automatic-meter-reader",
   "dependencies": [],
   "codeowners": ["@ardiloot"],
-  "requirements": ["automatic-meter-reader==1.1.0"],
+  "requirements": ["automatic-meter-reader==1.2.1"],
   "iot_class": "local_polling"
 }
