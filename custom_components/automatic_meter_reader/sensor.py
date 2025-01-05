@@ -11,7 +11,7 @@ from automatic_meter_reader import AutomaticMeterReader
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.components.sensor import PLATFORM_SCHEMA, STATE_CLASS_TOTAL_INCREASING
+from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorStateClass
 from homeassistant.const import CONF_NAME, CONF_UNIT_OF_MEASUREMENT, CONF_DEVICE_CLASS
 
 _LOGGER = logging.getLogger(__name__)
@@ -67,7 +67,7 @@ class UtilityMeter(SensorEntity):
 
     @property
     def state_class(self):
-        return STATE_CLASS_TOTAL_INCREASING
+        return SensorStateClass.TOTAL_INCREASING
 
     @property
     def device_class(self):
